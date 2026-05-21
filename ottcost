@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubscAIbe - AI 구독 최적화 매니저</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for interactive reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Pretendard fallback -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #F8FAFC; /* 화이트/연회색 바탕 */
+        }
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(to right, #6366f1, #a855f7);
+            padding: 1px;
+        }
+        .gradient-border > div {
+            background: #FFFFFF; /* 카드 내부는 순백색 */
+        }
+        /* Custom Scrollbar for sleek UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8FAFC;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+
+<!-- Header navigation -->
+<nav class="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-40 px-4 py-4 sm:px-8 shadow-sm">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-500/20">
+                <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+            </div>
+            <div>
+                <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">SubscAIbe</span>
+                <span class="hidden sm:inline-block ml-2 text-xs text-slate-500 border border-slate-200 px-2 py-0.5 rounded-full">AI 분석 엔진 v2.0</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="openAddModal()" class="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-lg shadow-indigo-500/10 transition-all duration-200">
+                <i class="fa-solid fa-plus"></i> 구독 추가
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Container -->
+<main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 w-full flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Column: AI Diagnostics & Analytics Dashboard -->
+    <section class="lg:col-span-5 space-y-6">
+        
+        <!-- Interactive AI Diagnostics Summary -->
+        <div class="gradient-border rounded-2xl overflow-hidden shadow-sm">
+            <div class="p-6 rounded-2xl flex flex-col h-full justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-bold text-indigo-600 tracking-wider uppercase">AI 실시간 진단</span>
+                        <span class="flex h-2.5 w-2.5 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                        </span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800 leading-tight">지출 효율 극대화 리포트</h2>
+                    <p class="text-slate-600 text-sm mt-2 leading-relaxed" id="ai-main-analysis">
+                        현재 스크린 타임을 바탕으로 사용가치가 현저히 떨어지는 멤버십을 감지하는 중입니다...
+                    </p>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-slate-100 grid grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-xs text-slate-500 block">월 총 고정지출</span>
+                        <span id="total-cost" class="text-lg font-bold text-slate-800">0원</span>
+                    </div>
+                    <div class="bg-rose-50 p-3 rounded-xl border border-rose-100">
+                        <span class="text-xs text-rose-600 block">AI 절약 권장액</span>
+                        <span id="ai-savings" class="text-lg font-bold text-rose-600">0원</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI 진단 기준 설정 (사용자 설정 기능 추가) -->
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-md font-bold text-indigo-600 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> AI 진단 기준 설정
+                </h3>
+                <span class="text-[10px] bg-indigo-50 text-indigo-600 border border-indigo-100 px-2 py-0.5 rounded-full font-semibold">커스텀 규칙</span>
+            </div>
+            <p class="text-xs text-slate-500 leading-relaxed">자신의 가치소비 성향에 맞춰 진단 임계치 기준을 변경해보세요. 조건 변경 시 실시간 분석이 다시 실행됩니다.</p>
+            
+            <!-- CPH (Cost-Per-Hour) Slider -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <div class="flex justify-between text-xs text-slate-600 mb-2">
+                    <span>시간당 한계 비용 (해지 권장 기준)</span>
+                    <span class="font-bold text-indigo-600 text-sm" id="cph-threshold-val">2,000원</span>
+                </div>
+                <input type="range" min="500" max="5000" step="100" value="2000" 
+                    class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    id="cph-threshold-slider"
+                    oninput="updateCphThreshold(this.value)">
+                <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                    <span>500원 (깐깐함)</span>
+                    <span>2,000원 (보통)</span>
+                    <span>5,000원 (관대함)</span>
+                </div>
+            </div>
+
+            <!-- Toggle for Enforcing Average Usage Constraint -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+                <div class="space-y-0.5 pr-2">
+                    <span class="text-xs text-slate-700 font-semibold block">평균 사용량 미달 시 해지 권장</span>
+                    <span class="text-[10px] text-slate-500 block">업계 평균 사용량 이하일 경우 AI 알림 자동 부여</span>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="avg-usage-toggle" class="sr-only peer" checked onchange="toggleAvgUsageRule()">
+                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Custom Visual Dashboard Chart -->
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-bold text-slate-800">서비스별 스크린타임 지출비 비율</h3>
+                <span class="text-xs text-slate-500">시간당 이용 단가 기준</span>
+            </div>
+            <div class="relative min-h-[220px] flex items-center justify-center">
+                <canvas id="costEfficiencyChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Right Column: Interactive Subscription Simulators -->
+    <section class="lg:col-span-7 space-y-6">
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-indigo-600"></i>
+                내 구독 시뮬레이터 <span id="sub-count" class="text-xs px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full font-normal">0개</span>
+            </h2>
+            <span class="text-xs text-slate-400">슬라이더를 조절하여 사용시간 변화를 실험해보세요!</span>
+        </div>
+
+        <!-- Subscription Cards dynamic output -->
+        <div id="subscription-cards-list" class="space-y-4">
+            <!-- Dynamic Inject -->
+        </div>
+    </section>
+</main>
+
+<!-- Add Subscription Modal -->
+<div id="add-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-6 shadow-2xl relative transition-transform duration-300 scale-95">
+        <button onclick="closeAddModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-plus-circle text-indigo-600 mr-2"></i>새로운 구독 서비스 추가</h3>
+        
+        <form id="add-sub-form" onsubmit="handleAddSubscription(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">서비스 이름</label>
+                <input required type="text" id="add-name" placeholder="예: 넷플릭스, 웨이브 등" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">월 구독 요금 (원)</label>
+                    <input required type="number" id="add-price" placeholder="13500" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">카테고리</label>
+                    <select id="add-category" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-indigo-500">
+                        <option value="OTT / 영상">OTT / 영상</option>
+                        <option value="음악">음악 스트리밍</option>
+                        <option value="도서 / 미디어">도서 / 미디어</option>
+                        <option value="생산성 / 유틸">생산성 / IT</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">현재 사용 수준 (기본 설정)</label>
+                <select id="add-usage" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 focus:outline-none focus:border-indigo-500">
+                    <option value="low">낮음 (약 2시간/월)</option>
+                    <option value="mid" selected>보통 (약 15시간/월)</option>
+                    <option value="high">높음 (약 40시간/월)</option>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-500/10 transition-all duration-200 mt-2">
+                새 구독 서비스 등록
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Custom Toast Message Notification -->
+<div id="toast-msg" class="fixed bottom-6 right-6 bg-white border border-slate-200 text-slate-800 px-5 py-3 rounded-xl shadow-xl z-50 flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300">
+    <i class="fa-solid fa-circle-check text-emerald-500 text-lg" id="toast-icon"></i>
+    <span id="toast-text" class="text-sm font-semibold">알림 메시지</span>
+</div>
+
+<!-- Footer -->
+<footer class="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500 mt-12">
+    <div class="max-w-7xl mx-auto px-4">
+        <p class="mb-2">📊 GitHub Pages 호스팅 전용 배포 버전 - AI 알고리즘이 브라우저 로컬 스토리지와 연동하여 보존됩니다.</p>
+        <p>&copy; 2026 SubscAIbe Core. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    // Initial Simulated Subscriptions with Category-specific Average Hours
+    const defaultSubscriptions = [
+        { id: 'sub-1', name: 'Netflix Premium', price: 17000, hours: 26, averageHours: 30, category: 'OTT / 영상', color: '#E50914' },
+        { id: 'sub-2', name: 'Spotify Duo', price: 16355, hours: 48, averageHours: 40, category: '음악', color: '#1DB954' },
+        { id: 'sub-3', name: 'YouTube Premium', price: 14900, hours: 55, averageHours: 50, category: 'OTT / 영상', color: '#FF0000' },
+        { id: 'sub-4', name: 'Disney+', price: 13900, hours: 2, averageHours: 15, category: 'OTT / 영상', color: '#006E99' },
+        { id: 'sub-5', name: '쿠팡 와우 멤버십', price: 7890, hours: 1, averageHours: 8, category: '기타', color: '#FF9900' }
+    ];
+
+    let subscriptions = [];
+    let efficiencyChartInstance = null;
+
+    // Custom threshold settings
+    let userCphThreshold = 2000;
+    let enforceAvgUsage = true;
+
+    // Load Data from LocalStorage or Fallback to Defaults
+    function loadData() {
+        const localData = localStorage.getItem('subscAibe_subs');
+        if (localData) {
+            try {
+                subscriptions = JSON.parse(localData);
+            } catch (e) {
+                subscriptions = [...defaultSubscriptions];
+            }
+        } else {
+            subscriptions = [...defaultSubscriptions];
+            saveData();
+        }
+
+        // Load customizable AI rules
+        userCphThreshold = parseInt(localStorage.getItem('subscAibe_cph_threshold')) || 2000;
+        enforceAvgUsage = localStorage.getItem('subscAibe_enforce_avg') !== 'false';
+
+        // Bind rules to UI components
+        document.getElementById('cph-threshold-slider').value = userCphThreshold;
+        document.getElementById('cph-threshold-val').innerText = `${userCphThreshold.toLocaleString()}원`;
+        document.getElementById('avg-usage-toggle').checked = enforceAvgUsage;
+    }
+
+    // Save Data to LocalStorage
+    function saveData() {
+        localStorage.setItem('subscAibe_subs', JSON.stringify(subscriptions));
+    }
+
+    // Custom settings updaters
+    function updateCphThreshold(value) {
+        userCphThreshold = parseInt(value);
+        localStorage.setItem('subscAibe_cph_threshold', userCphThreshold);
+        document.getElementById('cph-threshold-val').innerText = `${userCphThreshold.toLocaleString()}원`;
+        renderApp();
+    }
+
+    function toggleAvgUsageRule() {
+        enforceAvgUsage = document.getElementById('avg-usage-toggle').checked;
+        localStorage.setItem('subscAibe_enforce_avg', enforceAvgUsage);
+        renderApp();
+    }
+
+    // Render Cards in View
+    function renderApp() {
+        const container = document.getElementById('subscription-cards-list');
+        document.getElementById('sub-count').innerText = `${subscriptions.length}개`;
+        
+        let listHtml = '';
+        let totalCost = 0;
+        let aiSavings = 0;
+        let cancelRecommendedCount = 0;
+
+        subscriptions.forEach(sub => {
+            totalCost += sub.price;
+
+            // Safe division for Cost Per Hour
+            const safeHours = sub.hours > 0 ? sub.hours : 0.01;
+            const costPerHour = Math.round(sub.price / safeHours);
+
+            // Determine diagnostic indicators based on custom user threshold
+            const isBelowAverage = sub.hours < sub.averageHours;
+            const isAboveCphThreshold = costPerHour > userCphThreshold;
+
+            // AI Status calculation
+            let badgeText = '✨ 유지 권장';
+            let badgeColorClass = 'bg-emerald-50 text-emerald-600 border-emerald-100';
+            let cardBorder = 'border-slate-200';
+            let feedbackMsg = '시간 대비 매우 알차게 감상 중입니다!';
+
+            if (isAboveCphThreshold || (enforceAvgUsage && isBelowAverage)) {
+                badgeText = '🚨 해지 및 다운그레이드 권장';
+                badgeColorClass = 'bg-rose-50 text-rose-600 border-rose-100';
+                cardBorder = 'border-rose-200 bg-rose-50/20';
+                
+                if (isAboveCphThreshold && isBelowAverage) {
+                    feedbackMsg = `시간당 비용(${costPerHour.toLocaleString()}원)이 설정 기준을 초과하며, 월평균 사용량(${sub.averageHours}시간) 대비 실적이 부족합니다.`;
+                } else if (isAboveCphThreshold) {
+                    feedbackMsg = `시간당 소모 비용(${costPerHour.toLocaleString()}원)이 한계 임계치인 ${userCphThreshold.toLocaleString()}원을 초과했습니다.`;
+                } else {
+                    feedbackMsg = `가성비는 정상 범위이나 월 사용량(${sub.hours}시간)이 평균(${sub.averageHours}시간)보다 낮아 방치 위험이 있습니다.`;
+                }
+                aiSavings += sub.price;
+                cancelRecommendedCount++;
+            } else if (costPerHour > (userCphThreshold * 0.75)) {
+                badgeText = '⚠️ 사용량 모니터링 요망';
+                badgeColorClass = 'bg-yellow-50 text-yellow-600 border-yellow-100';
+                cardBorder = 'border-yellow-200 bg-yellow-50/10';
+                feedbackMsg = '이용률 대비 요금 균형이 아슬아슬합니다. 조금 더 자주 활용해 주세요!';
+            }
+
+            // Calculation of delta usage (Standard comparison)
+            const diffHours = sub.hours - sub.averageHours;
+            let diffHtml = '';
+            if (diffHours < 0) {
+                diffHtml = `<span class="text-rose-600 font-semibold">평균 미달 (${Math.abs(diffHours)}h 부족) 📉</span>`;
+            } else if (diffHours > 0) {
+                diffHtml = `<span class="text-emerald-600 font-semibold">평균 초과 (+${diffHours}h 달성) 📈</span>`;
+            } else {
+                diffHtml = `<span class="text-slate-500 font-semibold">평균 사용량 일치 📊</span>`;
+            }
+
+            listHtml += `
+            <div class="p-5 rounded-2xl bg-white border ${cardBorder} shadow-sm transition-all duration-300 hover:border-slate-300 flex flex-col justify-between">
+                <div>
+                    <!-- Top section Info -->
+                    <div class="flex justify-between items-start gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-inner" style="background: ${sub.color || '#374151'}">
+                                ${sub.name.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                                    ${sub.name}
+                                    <span class="text-[10px] font-normal px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">${sub.category}</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">월 ${sub.price.toLocaleString()}원</p>
+                            </div>
+                        </div>
+                        <button onclick="deleteSubscription('${sub.id}')" class="text-slate-400 hover:text-rose-500 p-1.5 transition-colors" title="구독 삭제">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+
+                    <!-- Simulator Slider with Industry Average Benchmark indicators -->
+                    <div class="mt-5 mb-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <div class="flex justify-between text-xs text-slate-500 mb-2">
+                            <span>월 시뮬레이션 스크린 타임</span>
+                            <span class="font-semibold text-indigo-600 text-sm">${sub.hours}시간</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="${sub.hours}" 
+                            class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                            oninput="updateHours('${sub.id}', this.value)">
+                        <div class="flex justify-between text-[10px] text-slate-400 mt-2 border-t border-slate-200/60 pt-2">
+                            <span>평균 기준: <strong class="text-slate-600">${sub.averageHours}시간</strong></span>
+                            <span>${diffHtml}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Verdict Block -->
+                <div class="mt-2 p-3 rounded-xl bg-slate-50 border border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                    <div class="space-y-1">
+                        <span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColorClass}">
+                            ${badgeText}
+                        </span>
+                        <p class="text-xs text-slate-600 leading-relaxed">${feedbackMsg}</p>
+                    </div>
+                    <div class="text-right whitespace-nowrap border-t sm:border-t-0 border-slate-200 pt-2 sm:pt-0">
+                        <span class="text-[10px] text-slate-400 block">시간당 소모비용</span>
+                        <span class="text-sm font-semibold text-slate-700">${costPerHour.toLocaleString()}원/시간</span>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+
+        container.innerHTML = listHtml;
+
+        // Stat updates
+        document.getElementById('total-cost').innerText = `${totalCost.toLocaleString()}원`;
+        document.getElementById('ai-savings').innerText = `${aiSavings.toLocaleString()}원`;
+
+        updateMainAIReport(cancelRecommendedCount, aiSavings);
+        updateChart();
+    }
+
+    // Dynamic hour simulator handler
+    function updateHours(id, value) {
+        const sub = subscriptions.find(s => s.id === id);
+        if (sub) {
+            sub.hours = parseInt(value);
+            saveData();
+            renderApp();
+        }
+    }
+
+    // AI Global Intelligence Message custom parser
+    function updateMainAIReport(wasteCount, potentialSavings) {
+        const aiAnalysisEl = document.getElementById('ai-main-analysis');
+        if (wasteCount > 0) {
+            aiAnalysisEl.innerHTML = `🤖 <strong>AI 최적화 비서:</strong> 분석 결과 사용률 경고 기준을 벗어나거나 권장 평균보다 사용 시간이 저조한 서비스가 <strong class="text-rose-600 font-bold">${wasteCount}개</strong> 감지되었습니다. 진단에 맞춰 최적화 시 매월 <strong class="text-indigo-600 font-bold">${potentialSavings.toLocaleString()}원</strong>을 효과적으로 방어할 수 있습니다.`;
+        } else {
+            aiAnalysisEl.innerHTML = `🤖 <strong>AI 최적화 비서:</strong> 완벽한 지출 효율성입니다! 방치된 유령 구독 또는 사용자 커스텀 한계 기준(시간당 ${userCphThreshold.toLocaleString()}원)을 초과하는 구독제가 없습니다.`;
+        }
+    }
+
+    // Modal Operations
+    function openAddModal() {
+        const modal = document.getElementById('add-modal');
+        modal.classList.remove('hidden');
+    }
+
+    function closeAddModal() {
+        const modal = document.getElementById('add-modal');
+        modal.classList.add('hidden');
+    }
+
+    // Add Subscription Handler with Average Standard Matching
+    function handleAddSubscription(event) {
+        event.preventDefault();
+
+        const name = document.getElementById('add-name').value;
+        const price = parseInt(document.getElementById('add-price').value) || 0;
+        const category = document.getElementById('add-category').value;
+        const usageLevel = document.getElementById('add-usage').value;
+
+        let hours = 15;
+        if (usageLevel === 'low') hours = 2;
+        if (usageLevel === 'high') hours = 45;
+
+        // Dynamic industry average hours matching
+        let averageHours = 15;
+        if (category === 'OTT / 영상') averageHours = 30;
+        else if (category === '음악') averageHours = 40;
+        else if (category === '도서 / 미디어') averageHours = 12;
+        else if (category === '생산성 / 유틸') averageHours = 20;
+
+        // Generate dynamic soft neon color based on name length
+        const colors = ['#E50914', '#1DB954', '#FF0000', '#006E99', '#FF9900', '#8A2BE2', '#4B0082', '#0000FF'];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+        const newSub = {
+            id: 'sub-' + Date.now(),
+            name,
+            price,
+            hours,
+            averageHours,
+            category,
+            color: randomColor
+        };
+
+        subscriptions.push(newSub);
+        saveData();
+        renderApp();
+        closeAddModal();
+        document.getElementById('add-sub-form').reset();
+        showToast("새 구독이 안전하게 등록되었습니다.");
+    }
+
+    // Delete subscription
+    function deleteSubscription(id) {
+        subscriptions = subscriptions.filter(s => s.id !== id);
+        saveData();
+        renderApp();
+        showToast("구독 서비스가 해제되었습니다.", "warning");
+    }
+
+    // Chart rendering logic
+    function updateChart() {
+        const ctx = document.getElementById('costEfficiencyChart').getContext('2d');
+        
+        const labels = subscriptions.map(s => s.name);
+        const datasetData = subscriptions.map(s => {
+            const safeHours = s.hours > 0 ? s.hours : 0.01;
+            return Math.round(s.price / safeHours);
+        });
+        const colors = subscriptions.map(s => s.color || '#475569');
+
+        if (efficiencyChartInstance) {
+            efficiencyChartInstance.destroy();
+        }
+
+        efficiencyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '시간당 서비스 이용 비용 (원/시간)',
+                    data: datasetData,
+                    backgroundColor: colors.map(c => c + 'BB'), // Adding transparency
+                    borderColor: colors,
+                    borderWidth: 1.5,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ` 단가: ${context.parsed.y.toLocaleString()}원/시간`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#F1F5F9'
+                        },
+                        ticks: {
+                            color: '#64748B',
+                            font: { size: 10 }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#64748B',
+                            font: { size: 10 }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Toast Alert notification drawer
+    function showToast(text, type = "success") {
+        const toast = document.getElementById('toast-msg');
+        const icon = document.getElementById('toast-icon');
+        const textEl = document.getElementById('toast-text');
+
+        textEl.innerText = text;
+
+        if (type === "success") {
+            icon.className = "fa-solid fa-circle-check text-emerald-500 text-lg";
+        } else {
+            icon.className = "fa-solid fa-circle-exclamation text-yellow-500 text-lg";
+        }
+
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-20', 'opacity-0');
+        }, 3000);
+    }
+
+    // Page Load Setup
+    window.onload = function() {
+        loadData();
+        renderApp();
+    };
+</script>
+</body>
+</html>
