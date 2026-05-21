@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Value-Time - AI 구독 최적화 매니저</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js for interactive reports -->
+    <!-- Chart.js for interactive visual reports -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Font Awesome Icons -->
+    <!-- Font Awesome Icons for beautiful modern look -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter & Pretendard fallback -->
+    <!-- Pretendard / Inter font style fallback -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #F8FAFC; /* 화이트/연회색 바탕 */
+            background-color: #F8FAFC; /* Clean White/Soft Gray base background */
         }
         .gradient-border {
             position: relative;
@@ -23,7 +23,7 @@
             padding: 1px;
         }
         .gradient-border > div {
-            background: #FFFFFF; /* 카드 내부는 순백색 */
+            background: #FFFFFF; /* High contrast white background for cards */
         }
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
@@ -40,7 +40,7 @@
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col justify-between">
 
-<!-- Header navigation -->
+<!-- Header navigation with Premium white blurred styling -->
 <nav class="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-40 px-4 py-4 sm:px-8 shadow-sm">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
         <div class="flex items-center gap-3">
@@ -53,14 +53,14 @@
             </div>
         </div>
         <div class="flex items-center gap-4">
-            <button onclick="openAddModal()" class="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-lg shadow-indigo-500/10 transition-all duration-200">
+            <button onclick="openAddModal()" class="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-lg shadow-indigo-500/10 transition-all duration-200 cursor-pointer">
                 <i class="fa-solid fa-plus"></i> 구독 추가
             </button>
         </div>
     </div>
 </nav>
 
-<!-- Main Container -->
+<!-- Main Container Grid -->
 <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 w-full flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
 
     <!-- Left Column: AI Diagnostics & Analytics Dashboard -->
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <!-- AI 진단 기준 설정 (사용자 설정 기능 추가) -->
+        <!-- AI Diagnosis Customization settings panel -->
         <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm space-y-4">
             <div class="flex justify-between items-center">
                 <h3 class="text-md font-bold text-indigo-600 flex items-center gap-2">
@@ -136,7 +136,7 @@
             </div>
         </div>
 
-        <!-- Custom Visual Dashboard Chart -->
+        <!-- Interactive Chart Visualizer Dashboard -->
         <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-md font-bold text-slate-800">서비스별 스크린타임 지출비 비율</h3>
@@ -160,15 +160,15 @@
 
         <!-- Subscription Cards dynamic output -->
         <div id="subscription-cards-list" class="space-y-4">
-            <!-- Dynamic Inject -->
+            <!-- Dynamic Inject from Javascript -->
         </div>
     </section>
 </main>
 
-<!-- Add Subscription Modal -->
+<!-- Add Subscription Modal Popup -->
 <div id="add-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-6 shadow-2xl relative transition-transform duration-300 scale-95">
-        <button onclick="closeAddModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
+        <button onclick="closeAddModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg cursor-pointer">
             <i class="fa-solid fa-xmark"></i>
         </button>
         <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-plus-circle text-indigo-600 mr-2"></i>새로운 구독 서비스 추가</h3>
@@ -202,14 +202,14 @@
                     <option value="high">높음 (약 40시간/월)</option>
                 </select>
             </div>
-            <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-500/10 transition-all duration-200 mt-2">
+            <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-500/10 transition-all duration-200 mt-2 cursor-pointer">
                 새 구독 서비스 등록
             </button>
         </form>
     </div>
 </div>
 
-<!-- Custom Toast Message Notification -->
+<!-- Custom Toast Message Notification Drawer -->
 <div id="toast-msg" class="fixed bottom-6 right-6 bg-white border border-slate-200 text-slate-800 px-5 py-3 rounded-xl shadow-xl z-50 flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300">
     <i class="fa-solid fa-circle-check text-emerald-500 text-lg" id="toast-icon"></i>
     <span id="toast-text" class="text-sm font-semibold">알림 메시지</span>
@@ -224,7 +224,7 @@
 </footer>
 
 <script>
-    // Initial Simulated Subscriptions with Category-specific Average Hours
+    // Initial Simulated Subscriptions dataset with category-specific settings
     const defaultSubscriptions = [
         { id: 'sub-1', name: 'Netflix Premium', price: 17000, hours: 26, averageHours: 30, category: 'OTT / 영상', color: '#E50914' },
         { id: 'sub-2', name: 'Spotify Duo', price: 16355, hours: 48, averageHours: 40, category: '음악', color: '#1DB954' },
@@ -236,11 +236,11 @@
     let subscriptions = [];
     let efficiencyChartInstance = null;
 
-    // Custom threshold settings
+    // Custom threshold default parameters
     let userCphThreshold = 2000;
     let enforceAvgUsage = true;
 
-    // Load Data from LocalStorage or Fallback to Defaults
+    // Load Data from LocalStorage or fallback to original data
     function loadData() {
         const localData = localStorage.getItem('valuetime_subs');
         if (localData) {
@@ -254,11 +254,11 @@
             saveData();
         }
 
-        // Load customizable AI rules
+        // Load personalized thresholds
         userCphThreshold = parseInt(localStorage.getItem('valuetime_cph_threshold')) || 2000;
         enforceAvgUsage = localStorage.getItem('valuetime_enforce_avg') !== 'false';
 
-        // Bind rules to UI components
+        // Connect inputs with stored values
         document.getElementById('cph-threshold-slider').value = userCphThreshold;
         document.getElementById('cph-threshold-val').innerText = `${userCphThreshold.toLocaleString()}원`;
         document.getElementById('avg-usage-toggle').checked = enforceAvgUsage;
@@ -269,7 +269,7 @@
         localStorage.setItem('valuetime_subs', JSON.stringify(subscriptions));
     }
 
-    // Custom settings updaters
+    // Trigger state changes when users move the CPH slider
     function updateCphThreshold(value) {
         userCphThreshold = parseInt(value);
         localStorage.setItem('valuetime_cph_threshold', userCphThreshold);
@@ -277,14 +277,14 @@
         renderApp();
     }
 
-    // Toggle rules
+    // Toggle rule setting
     function toggleAvgUsageRule() {
         enforceAvgUsage = document.getElementById('avg-usage-toggle').checked;
         localStorage.setItem('valuetime_enforce_avg', enforceAvgUsage);
         renderApp();
     }
 
-    // Render Cards in View
+    // Main Dashboard Card Renderer
     function renderApp() {
         const container = document.getElementById('subscription-cards-list');
         document.getElementById('sub-count').innerText = `${subscriptions.length}개`;
@@ -297,15 +297,15 @@
         subscriptions.forEach(sub => {
             totalCost += sub.price;
 
-            // Safe division for Cost Per Hour
+            // Prevent division by zero mathematically
             const safeHours = sub.hours > 0 ? sub.hours : 0.01;
             const costPerHour = Math.round(sub.price / safeHours);
 
-            // Determine diagnostic indicators based on custom user threshold
+            // Determine diagnostics based on custom user parameters
             const isBelowAverage = sub.hours < sub.averageHours;
             const isAboveCphThreshold = costPerHour > userCphThreshold;
 
-            // AI Status calculation
+            // AI dynamic decision logic
             let badgeText = '✨ 유지 권장';
             let badgeColorClass = 'bg-emerald-50 text-emerald-600 border-emerald-100';
             let cardBorder = 'border-slate-200';
@@ -332,7 +332,7 @@
                 feedbackMsg = '이용률 대비 요금 균형이 아슬아슬합니다. 조금 더 자주 활용해 주세요!';
             }
 
-            // Calculation of delta usage (Standard comparison)
+            // Industry benchmark display details
             const diffHours = sub.hours - sub.averageHours;
             let diffHtml = '';
             if (diffHours < 0) {
@@ -360,12 +360,12 @@
                                 <p class="text-xs text-slate-500 mt-0.5">월 ${sub.price.toLocaleString()}원</p>
                             </div>
                         </div>
-                        <button onclick="deleteSubscription('${sub.id}')" class="text-slate-400 hover:text-rose-500 p-1.5 transition-colors" title="구독 삭제">
+                        <button onclick="deleteSubscription('${sub.id}')" class="text-slate-400 hover:text-rose-500 p-1.5 transition-colors cursor-pointer" title="구독 삭제">
                             <i class="fa-regular fa-trash-can text-sm"></i>
                         </button>
                     </div>
 
-                    <!-- Simulator Slider with Industry Average Benchmark indicators -->
+                    <!-- Simulator Slider and Industry benchmarking -->
                     <div class="mt-5 mb-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
                         <div class="flex justify-between text-xs text-slate-500 mb-2">
                             <span>월 시뮬레이션 스크린 타임</span>
@@ -381,7 +381,7 @@
                     </div>
                 </div>
 
-                <!-- AI Verdict Block -->
+                <!-- AI Verdict block -->
                 <div class="mt-2 p-3 rounded-xl bg-slate-50 border border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
                     <div class="space-y-1">
                         <span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColorClass}">
@@ -400,7 +400,7 @@
 
         container.innerHTML = listHtml;
 
-        // Stat updates
+        // Static parameters dynamic refresh
         document.getElementById('total-cost').innerText = `${totalCost.toLocaleString()}원`;
         document.getElementById('ai-savings').innerText = `${aiSavings.toLocaleString()}원`;
 
@@ -408,7 +408,6 @@
         updateChart();
     }
 
-    // Dynamic hour simulator handler
     function updateHours(id, value) {
         const sub = subscriptions.find(s => s.id === id);
         if (sub) {
@@ -418,7 +417,7 @@
         }
     }
 
-    // AI Global Intelligence Message custom parser
+    // Dynamic AI Report Title Generator
     function updateMainAIReport(wasteCount, potentialSavings) {
         const aiAnalysisEl = document.getElementById('ai-main-analysis');
         if (wasteCount > 0) {
@@ -428,7 +427,7 @@
         }
     }
 
-    // Modal Operations
+    // Modal states toggling functions
     function openAddModal() {
         const modal = document.getElementById('add-modal');
         modal.classList.remove('hidden');
@@ -439,7 +438,7 @@
         modal.classList.add('hidden');
     }
 
-    // Add Subscription Handler
+    // Submit and inject newly formulated custom subscriptions
     function handleAddSubscription(event) {
         event.preventDefault();
 
@@ -452,7 +451,7 @@
         if (usageLevel === 'low') hours = 2;
         if (usageLevel === 'high') hours = 45;
 
-        // Dynamic industry average hours matching
+        // Industry standard averages matching categories
         let averageHours = 15;
         if (category === 'OTT / 영상') averageHours = 30;
         else if (category === '음악') averageHours = 40;
@@ -480,7 +479,7 @@
         showToast("새 구독이 안전하게 등록되었습니다.");
     }
 
-    // Delete subscription
+    // Delete target subscriptions
     function deleteSubscription(id) {
         subscriptions = subscriptions.filter(s => s.id !== id);
         saveData();
@@ -488,7 +487,7 @@
         showToast("구독 서비스가 해제되었습니다.", "warning");
     }
 
-    // Chart rendering logic
+    // Drawing statistics dashboard visually
     function updateChart() {
         const ctx = document.getElementById('costEfficiencyChart').getContext('2d');
         
@@ -510,7 +509,7 @@
                 datasets: [{
                     label: '시간당 서비스 이용 비용 (원/시간)',
                     data: datasetData,
-                    backgroundColor: colors.map(c => c + 'BB'), // Adding transparency
+                    backgroundColor: colors.map(c => c + 'BB'), // semi-transparency for white theme clarity
                     borderColor: colors,
                     borderWidth: 1.5,
                     borderRadius: 6
@@ -556,7 +555,7 @@
         });
     }
 
-    // Toast Alert notification drawer
+    // Floating notifications
     function showToast(text, type = "success") {
         const toast = document.getElementById('toast-msg');
         const icon = document.getElementById('toast-icon');
@@ -579,7 +578,7 @@
         }, 3000);
     }
 
-    // Page Load Setup
+    // Page Startup Execution
     window.onload = function() {
         loadData();
         renderApp();
