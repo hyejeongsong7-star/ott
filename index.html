@@ -202,6 +202,31 @@
                     <option value="high">높음 (약 40시간/월)</option>
                 </select>
             </div>
+            
+            <!-- 결제일 및 결제 카드 추가 입력란 (그리드 레이아웃) -->
+            <div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">매월 정기 결제일</label>
+                    <select id="add-billing-day" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-indigo-500">
+                        <!-- JS에서 동적으로 1일~31일 렌더링 -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">지정 결제 수단(카드)</label>
+                    <select id="add-payment-card" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-indigo-500">
+                        <option value="국민KB카드">국민KB카드</option>
+                        <option value="신한카드">신한카드</option>
+                        <option value="현대카드">현대카드</option>
+                        <option value="삼성카드">삼성카드</option>
+                        <option value="하나카드">하나카드</option>
+                        <option value="토스뱅크카드">토스뱅크카드</option>
+                        <option value="카카오페이">카카오페이</option>
+                        <option value="네이버페이">네이버페이</option>
+                        <option value="현금 / 직접 이체">현금 / 직접 이체</option>
+                    </select>
+                </div>
+            </div>
+            
             <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-500/10 transition-all duration-200 mt-2 cursor-pointer">
                 새 구독 서비스 등록
             </button>
@@ -225,12 +250,13 @@
 
 <script>
     // Initial Simulated Subscriptions dataset with category-specific settings
+    // 추가 요구 사항: billingDay(결제일), paymentCard(결제카드) 속성 기본 매핑
     const defaultSubscriptions = [
-        { id: 'sub-1', name: 'Netflix Premium', price: 17000, hours: 26, averageHours: 30, category: 'OTT / 영상', color: '#E50914' },
-        { id: 'sub-2', name: 'Spotify Duo', price: 16355, hours: 48, averageHours: 40, category: '음악', color: '#1DB954' },
-        { id: 'sub-3', name: 'YouTube Premium', price: 14900, hours: 55, averageHours: 50, category: 'OTT / 영상', color: '#FF0000' },
-        { id: 'sub-4', name: 'Disney+', price: 13900, hours: 2, averageHours: 15, category: 'OTT / 영상', color: '#006E99' },
-        { id: 'sub-5', name: '쿠팡 와우 멤버십', price: 7890, hours: 1, averageHours: 8, category: '기타', color: '#FF9900' }
+        { id: 'sub-1', name: 'Netflix Premium', price: 17000, hours: 26, averageHours: 30, category: 'OTT / 영상', color: '#E50914', billingDay: 4, paymentCard: '현대카드' },
+        { id: 'sub-2', name: 'Spotify Duo', price: 16355, hours: 48, averageHours: 40, category: '음악', color: '#1DB954', billingDay: 15, paymentCard: '신한카드' },
+        { id: 'sub-3', name: 'YouTube Premium', price: 14900, hours: 55, averageHours: 50, category: 'OTT / 영상', color: '#FF0000', billingDay: 25, paymentCard: '카카오페이' },
+        { id: 'sub-4', name: 'Disney+', price: 13900, hours: 2, averageHours: 15, category: 'OTT / 영상', color: '#006E99', billingDay: 28, paymentCard: '삼성카드' },
+        { id: 'sub-5', name: '쿠팡 와우 멤버십', price: 7890, hours: 1, averageHours: 8, category: '기타', color: '#FF9900', billingDay: 10, paymentCard: '국민KB카드' }
     ];
 
     let subscriptions = [];
@@ -240,12 +266,64 @@
     let userCphThreshold = 2000;
     let enforceAvgUsage = true;
 
+    /**
+     * 지정한 결제일까지 남은 일수(D-Day)를 동적으로 계산하는 헬퍼 함수
+     * @param {number} billingDay (1-31)
+     * @returns {number} 남은 일수
+     */
+    function getDaysUntilBilling(billingDay) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth(); // 0 (1월) ~ 11 (12월)
+        const date = today.getDate();
+
+        // 1. 이번달 결제일 시점 생성
+        let billingDate = new Date(year, month, billingDay);
+        
+        // 만약 이번달 결제일이 지났다면(혹은 오늘이라면) 다음달 결제일로 세팅
+        if (billingDay < date) {
+            billingDate = new Date(year, month + 1, billingDay);
+        } else if (billingDay === date) {
+            // 결제일 당일인 경우 D-Day 0
+            return 0;
+        }
+
+        // 밀리초 단위를 순수 일 단위로 반환
+        const oneDayMs = 1000 * 60 * 60 * 24;
+        const todayReset = new Date(year, month, date); // 시간 차이 제거
+        const timeDiff = billingDate.getTime() - todayReset.getTime();
+        
+        return Math.ceil(timeDiff / oneDayMs);
+    }
+
+    /**
+     * 모달 내 결제일 선택 옵션(1~31일) 구성
+     */
+    function populateBillingDays() {
+        const selectEl = document.getElementById('add-billing-day');
+        let optionsHtml = '';
+        for (let day = 1; day <= 31; day++) {
+            optionsHtml += `<option value="${day}">매달 ${day}일</option>`;
+        }
+        selectEl.innerHTML = optionsHtml;
+    }
+
     // Load Data from LocalStorage or fallback to original data
     function loadData() {
         const localData = localStorage.getItem('valuetime_subs');
         if (localData) {
             try {
-                subscriptions = JSON.parse(localData);
+                const parsed = JSON.parse(localData);
+                // 중요: 기존 스토리지 데이터에 billingDay, paymentCard가 유실되어 있을 시 보정 조치
+                subscriptions = parsed.map((sub, index) => {
+                    if (sub.billingDay === undefined) {
+                        sub.billingDay = defaultSubscriptions[index] ? defaultSubscriptions[index].billingDay : Math.floor(Math.random() * 28) + 1;
+                    }
+                    if (sub.paymentCard === undefined) {
+                        sub.paymentCard = defaultSubscriptions[index] ? defaultSubscriptions[index].paymentCard : '국민KB카드';
+                    }
+                    return sub;
+                });
             } catch (e) {
                 subscriptions = [...defaultSubscriptions];
             }
@@ -343,6 +421,24 @@
                 diffHtml = `<span class="text-slate-500 font-semibold">평균 사용량 일치 📊</span>`;
             }
 
+            // 실시간 결제 D-Day & 결제 수단 렌더링을 위한 연산
+            const daysLeft = getDaysUntilBilling(sub.billingDay || 1);
+            let dDayBadge = '';
+            
+            // 결제 임계 점검: 3일 이내 결제 시 빨간색 알림 경고 표시
+            if (daysLeft === 0) {
+                dDayBadge = `<span class="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg border border-rose-200 animate-pulse flex items-center gap-1"><i class="fa-solid fa-credit-card"></i> 오늘 결제 예정</span>`;
+            } else if (daysLeft <= 3) {
+                dDayBadge = `<span class="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg border border-rose-200 animate-pulse flex items-center gap-1"><i class="fa-solid fa-clock-rotate-left"></i> 결제일 ${daysLeft}일 전</span>`;
+            } else {
+                dDayBadge = `<span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-lg flex items-center gap-1"><i class="fa-solid fa-calendar-day"></i> 결제일 ${daysLeft}일 전</span>`;
+            }
+
+            // 결제 카드 이름에 맞는 심플 매칭 아이콘 데코레이터
+            const cardIcon = sub.paymentCard.includes('페이') 
+                ? '<i class="fa-solid fa-wallet text-amber-500 text-[11px] mr-1"></i>' 
+                : '<i class="fa-regular fa-credit-card text-indigo-500 text-[11px] mr-1"></i>';
+
             listHtml += `
             <div class="p-5 rounded-2xl bg-white border ${cardBorder} shadow-sm transition-all duration-300 hover:border-slate-300 flex flex-col justify-between">
                 <div>
@@ -357,12 +453,19 @@
                                     ${sub.name}
                                     <span class="text-[10px] font-normal px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">${sub.category}</span>
                                 </h3>
-                                <p class="text-xs text-slate-500 mt-0.5">월 ${sub.price.toLocaleString()}원</p>
+                                <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5 text-xs text-slate-500">
+                                    <span class="font-medium">월 ${sub.price.toLocaleString()}원</span>
+                                    <span class="text-slate-300">•</span>
+                                    <span class="flex items-center">${cardIcon}${sub.paymentCard || '미등록'} (${sub.billingDay || 1}일)</span>
+                                </div>
                             </div>
                         </div>
-                        <button onclick="deleteSubscription('${sub.id}')" class="text-slate-400 hover:text-rose-500 p-1.5 transition-colors cursor-pointer" title="구독 삭제">
-                            <i class="fa-regular fa-trash-can text-sm"></i>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            ${dDayBadge}
+                            <button onclick="deleteSubscription('${sub.id}')" class="text-slate-400 hover:text-rose-500 p-1.5 transition-colors cursor-pointer" title="구독 삭제">
+                                <i class="fa-regular fa-trash-can text-sm"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Simulator Slider and Industry benchmarking -->
@@ -383,7 +486,7 @@
 
                 <!-- AI Verdict block -->
                 <div class="mt-2 p-3 rounded-xl bg-slate-50 border border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                    <div class="space-y-1">
+                    <div class="space-y-1 text-left">
                         <span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColorClass}">
                             ${badgeText}
                         </span>
@@ -446,6 +549,8 @@
         const price = parseInt(document.getElementById('add-price').value) || 0;
         const category = document.getElementById('add-category').value;
         const usageLevel = document.getElementById('add-usage').value;
+        const billingDay = parseInt(document.getElementById('add-billing-day').value) || 1;
+        const paymentCard = document.getElementById('add-payment-card').value;
 
         let hours = 15;
         if (usageLevel === 'low') hours = 2;
@@ -468,7 +573,9 @@
             hours,
             averageHours,
             category,
-            color: randomColor
+            color: randomColor,
+            billingDay,
+            paymentCard
         };
 
         subscriptions.push(newSub);
@@ -580,6 +687,7 @@
 
     // Page Startup Execution
     window.onload = function() {
+        populateBillingDays();
         loadData();
         renderApp();
     };
